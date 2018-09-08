@@ -1,4 +1,4 @@
-package util;
+package com.myNetty.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonParser;

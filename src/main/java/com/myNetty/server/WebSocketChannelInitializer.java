@@ -1,6 +1,6 @@
-package server;
+package com.myNetty.server;
 
-import handler.TextWebSocketFrameHandler;
+import com.myNetty.handler.TextWebSocketFrameHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

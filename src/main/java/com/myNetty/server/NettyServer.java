@@ -1,4 +1,4 @@
-package server;
+package com.myNetty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -10,7 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.ImmediateEventExecutor;
-import manage.ServerChannelsHolder;
+import com.myNetty.manage.ServerChannelsHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -71,13 +71,13 @@ public class NettyServer  implements InitializingBean, BeanDefinitionRegistryPos
                         .childHandler(new WebSocketChannelInitializer());
 
                 ChannelFuture future = serverBootstrap.bind(port).syncUninterruptibly();
-                logger.info("The netty websocket server is now ready to accept requests on port {}", NettyServer.this.port);
+                logger.info("The netty websocket com.myNetty.server is now ready to accept requests on port {}", NettyServer.this.port);
                 // 初始化群组
                 ServerChannelsHolder.getChannelGroups().put("all", new DefaultChannelGroup(ImmediateEventExecutor.INSTANCE));
                 // 阻塞关闭
                 future.channel().closeFuture().syncUninterruptibly();
             } catch (Exception e) {
-                logger.error("The netty websocket server start error on {}", e.getMessage());
+                logger.error("The netty websocket com.myNetty.server start error on {}", e.getMessage());
             } finally {
                 // 释放资源
                 boss.shutdownGracefully();
@@ -122,7 +122,7 @@ public class NettyServer  implements InitializingBean, BeanDefinitionRegistryPos
                 executorService.shutdownNow();
             }
         }catch (Exception e) {
-            logger.info("Forced end of the netty server.");
+            logger.info("Forced end of the netty com.myNetty.server.");
             logger.error(e.getMessage());
         }
     }
