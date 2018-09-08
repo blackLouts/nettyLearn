@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <input type="button" value="test" onclick="testSocketConnect()" />
+    </div>
+</body>
+<script>
+    "use strict"; // 使用严格模式
+    var socket = {};
+    var url = "";
+    var heartbeatInterval = "";
+    function initHeartBeat(connection, interval) {
+        let heartBeat = {};
+        let heartBeatObj;
+
+        heartBeat.start = function () {
+            heartBeatObj = setTimeout(function () {
+                if (connection && connection.readyState === 1) {
+                    connection.send('');
+                }
+            }, interval);
+        };
+        heartBeat.stop = function () {
+            if (heartBeatObj) {
+                clearTimeout(heartBeatObj);
+            }
+            heartBeatObj = null;
+        };
+        heartBeat.reset = function () {
+            this.stop();
+            this.start();
+        };
+
+        return heartBeat;
+    }
+
+    function initReconnect() {
+        let reconnect = {};
+        let reconnectObj;
+
+        reconnect.start = function () {
+            reconnectObj = setTimeout(function () {
+                if (socket.connection && socket.connection.readyState === 3) {
+                    connect();
+                }
+            }, 5000);
+        };
+        reconnect.stop = function () {
+            if (reconnectObj) {
+                clearTimeout(reconnectObj);
+            }
+            reconnectObj = null;
+        };
+
+        return reconnect;
+    }
+
+    function connect() {
+        socket.isConnected = false;
+        const conn = new WebSocket(url);
+        socket.heartBeat = initHeartBeat(conn, heartbeatInterval);
+        socket.reconnect = initReconnect();
+
+        conn.onopen = function () {
+            socket.isConnected = true;
+            socket.reconnect.stop();
+            socket.heartBeat.start();
+        };
+        
+        conn.onclose = function () {
+            socket.isConnected = false;
+            socket.heartBeat.stop();
+            socket.reconnect.start();
+        };
+        
+        conn.onmessage = function (event) {
+            let message = event.data;
+            if (message !== '') {
+                console.log((JSON.parse(message)));
+            }
+            socket.heartBeat.reset();
+        };
+        
+        conn.onerror = function (event) {
+            console.error(event);
+        };
+        socket.connection = conn;
+    }
+
+    function send(message) {
+        if (socket.isConnected) {
+            socket.connection.send(message);
+            socket.heartBeat.reset();
+        }
+    }
+
+    function initConnect(uri, timeout) {
+        url = uri;
+        heartbeatInterval = timeout;
+        connect();
+    }
+
+    function testSocketConnect() {
+        var host = window.location.hostname;
+        var uri = "ws://192.168.4.216:9999/";
+        initConnect(uri, 5 * 1000);
+        let message = {
+            action: 'BIND_GROUP_CHANNEL',
+            groupId: "test"
+        };
+        setTimeout(function () {
+            send(JSON.stringify(message));
+        }, 1000);
+    }
+
+</script>
+</html>
