@@ -35,7 +35,6 @@ public class NettyServer  implements InitializingBean, BeanDefinitionRegistryPos
      * 执行server的Executor
      */
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
-
     // serverChannel的执行线程组，线程数量为1
     private NioEventLoopGroup boss = new NioEventLoopGroup(1);
     // clientChannel的执行线程组，线程数量使用默认值
