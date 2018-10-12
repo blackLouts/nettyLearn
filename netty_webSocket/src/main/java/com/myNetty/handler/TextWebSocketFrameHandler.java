@@ -1,14 +1,14 @@
 package com.myNetty.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.myNetty.manage.ServerChannelsHolder;
+import com.myNetty.util.JsonUtil;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
-import com.myNetty.manage.ServerChannelsHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.myNetty.util.JsonUtil;
 
 
 /**
